@@ -24,6 +24,10 @@ names(em_by_year) <- c("year", "total_emissions")
 
 ####################### PLOT DEVICE #######################
 
+ath <- "exploratory_data_analysis_final_project"
+path <- paste0(p, ath)
+setwd(path)
+
 png("./plot1.png")
 with(em_by_year, plot(year, total_emissions, xlab = "year", 
                       ylab = "total emissions",
