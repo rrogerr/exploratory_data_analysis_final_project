@@ -30,7 +30,7 @@ setwd(path)
 
 png("./plot1.png")
 with(em_by_year, plot(year, total_emissions, xlab = "year", 
-                      ylab = "total emissions",
+                      ylab = "total emissions (tons)",
                       pch = 19,
                       col = "red",
                       xaxt = "n"))
