@@ -38,13 +38,14 @@ setwd(path)
 png("./plot3.png")
 
 p <- ggplot(NEI1, aes(year, Emissions))
-p <- p + geom_point() + geom_smooth(method = "lm") +
+p <- p + geom_point(col = "red", size = 3) + geom_smooth(method = "lm") +
         facet_wrap(~type, ncol = 2) +
         labs(title = "Emissions by year and by source (Baltimore City)") +
         scale_x_discrete(limits = c(1999, 2002, 2005, 2008)) +
+        theme_set(theme_gray(base_size = 14)) +
         theme(panel.margin = unit(3, "lines")) +
-        theme(plot.margin = unit(c(1.5,1.5,1.5,0.5), "lines"))+
-        theme_set(theme_gray(base_size = 13))
+        theme(plot.margin = unit(c(1.5,1.5,1.5,0.5), "lines")) +
+        labs(y = "Emissions (tons)")
 
 print(p)
 
