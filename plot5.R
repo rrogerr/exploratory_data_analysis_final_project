@@ -1,6 +1,6 @@
-########################## PLOT4 ##########################
-# Across the United States, how have emissions from coal 
-# combustion-related sources changed from 1999–2008?
+########################## PLOT5 ##########################
+# How have emissions from motor vehicle sources changed 
+# from 1999–2008 in Baltimore City?
 
 
 ######################### IMPORTS #########################
@@ -18,18 +18,23 @@ SCC <- readRDS("Source_Classification_Code.rds")
 
 
 ######################## SUBSETTING ########################
-# WARNING! I'm assuming that looking for the regex "[Cc]oal" 
-# in the column Short.Name of SCC will give me all the coal
-# related sources
+# WARNING! I'm assuming that looking for the regex "[Mm]otor
+# [Vvehicle]" in the column Short.Name of SCC will give me 
+# all the motor vehicle sources
 
-SC_coal <- grepl("[Cc]oal", SCC$Short.Name, perl = TRUE)
+SCC_motor <- grepl("[Mm]otor [Vv]ehicle", SCC$Short.Name)
 
 # getting the codes to subset in NEI
-codes_coal <- SCC$SCC[SC_coal]
+codes_motor <- SCC$SCC[SCC_motor]
 
 # subsetting and collapsing NEI
-NEI_coal <- filter(NEI, SCC %in% codes_coal) %>% 
+NEI_motor <- filter(NEI, SCC %in% codes_motor & fips == "24510") %>% 
         aggregate(Emissions ~ year, data = ., sum)
+
+# IMPORTANT: It seems that there is no data available for 
+# motor vehicle sources in Baltimore City in years 1999
+# and 2008
+
 
 ####################### PLOT DEVICE #######################
 
@@ -38,13 +43,14 @@ path <- paste0(p, ath)
 setwd(path)
 
 png("./plot4.png")
-p <- ggplot(NEI_coal, aes(year, Emissions)) +
+p <- ggplot(NEI_motor, aes(year, Emissions)) +
         geom_point(col = "red", size = 3) +
         geom_smooth(method = "lm") +
-        labs(title = "National emissions (coal combustion-related)") +
+        labs(title = "emissions from motor vehicle sources in Baltimore City") +
         scale_x_discrete(limits = c(1999, 2002, 2005, 2008)) +
         labs(y = "Emissions (tons)") +
         theme_set(theme_gray(base_size = 14)) +
         theme(plot.margin = unit(c(1.5,1.5,1.5,0.5), "lines"))
 print(p)
 dev.off()
+
