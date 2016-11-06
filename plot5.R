@@ -18,11 +18,11 @@ SCC <- readRDS("Source_Classification_Code.rds")
 
 
 ######################## SUBSETTING ########################
-# WARNING! I'm assuming that looking for the regex "[Mm]otor
-# [Vvehicle]" in the column Short.Name of SCC will give me 
+# WARNING! I'm assuming that looking for the regex 
+# "[Vv]ehicle" in the column Short.Name of SCC will give me 
 # all the motor vehicle sources
 
-SCC_motor <- grepl("[Mm]otor [Vv]ehicle", SCC$Short.Name)
+SCC_motor <- grepl("[Vv]ehicle", SCC$Short.Name)
 
 # getting the codes to subset in NEI
 codes_motor <- SCC$SCC[SCC_motor]
@@ -30,10 +30,6 @@ codes_motor <- SCC$SCC[SCC_motor]
 # subsetting and collapsing NEI
 NEI_motor <- filter(NEI, SCC %in% codes_motor & fips == "24510") %>% 
         aggregate(Emissions ~ year, data = ., sum)
-
-# IMPORTANT: It seems that there is no data available for 
-# motor vehicle sources in Baltimore City in years 1999
-# and 2008
 
 
 ####################### PLOT DEVICE #######################
