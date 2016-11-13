@@ -1,0 +1,37 @@
+---
+title: 'A Study of Carbon Emissions in the US'
+author: "Rogelio Caballero"
+date: "November 13, 2016"
+output: html_document
+---
+
+The following is a commentary to my answers to the Final Project of Exporatory Data Analysis course, Data Science Specilization, Johns Hopkins University on Coursera.
+
+The idea was to make an exploratory analysis of carbon emissions in the US as a function of the variables: county, source of emission and time (1999 - 2008).
+
+## Data and Package imports
+
+The first step was to import all packages that we were going to use through the exercises.
+
+I decided to include *ggplot2* because of it was mandatory for a couple of questions but also for its convenience and intuitive notation.
+
+*dplyr* package was also included because of its elegant notation and efficient  
+work with large data frames.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+The emissions data was contained in an *.rds* file called *summarySCC_PM25.rds*. Since it is a pretty large file, the use of *dplyr* is justified.
+```{r}
+p <- "/home/rogelio/Desktop/datasciencecoursera/"
+ath <- "data/eda_final_project"
+path <- paste0(p, ath)
+
+setwd(path)
+NEI <- readRDS("./summarySCC_PM25.rds")
+summary(NEI)
+```
+
+
