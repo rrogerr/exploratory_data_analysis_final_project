@@ -23,15 +23,76 @@ library(dplyr)
 library(ggplot2)
 ```
 
-The emissions data was contained in an *.rds* file called *summarySCC_PM25.rds*. Since it is a pretty large file, the use of *dplyr* is justified.
-```{r}
-p <- "/home/rogelio/Desktop/datasciencecoursera/"
-ath <- "data/eda_final_project"
-path <- paste0(p, ath)
+The emissions data was contained in an *.rds* file called *summarySCC_PM25.rds* that it's going to be imported and saved to the *NEI* data frame. Since it is a pretty large file, the use of *dplyr* is justified.
 
-setwd(path)
+```{r}
 NEI <- readRDS("./summarySCC_PM25.rds")
-summary(NEI)
 ```
 
+We also want to import the file *Source_Classification_Code.rds* that contains the names and information about the source ID number that appear in the *SCC* column of *NEI*.
 
+```{r}
+SCC <- readRDS("./Source_Classification_Code.rds")
+```
+
+What follows are the answers to each one of the 6 questions of the project.
+
+## Question 1: Total emissions by year.
+*Have total emissions from PM2.5 decreased in the United States from 1999 to 2008? Using the base plotting system, make a plot showing the total PM2.5 emission from all sources for each of the years 1999, 2002, 2005, and 2008?*
+
+To answer this question we need to collapse *NEI* data frame by year, taking the sum of all emissions.
+```{r}
+em_by_year <- aggregate(NEI$Emissions, list(NEI$year), sum)
+names(em_by_year) <- c("year", "total_emissions")
+```
+Observe that it is necessary to cast the year column to class *list* in order to apply the function aggregate.
+
+The following chunk will produce the plot.
+```{r plot1, fig.height=5, fig.width=5}
+with(em_by_year, plot(year, total_emissions, xlab = "year", 
+                      ylab = "total emissions (tons)",
+                      pch = 19,
+                      col = "red",
+                      xaxt = "n"))
+
+# assigning ticks to x axis with the years of
+# interest
+axis(side = 1, at = c(1999,2002,2005,2008))
+
+# plotting linear model to show decreasing tendency
+model <- lm(em_by_year$total_emissions ~ em_by_year$year)
+abline(model, lwd = 2)
+
+title("total emissions by year (all counties, all sources)")
+```
+
+Though it was not mandatory, I included a linear model to show the decreasing trend.
+
+## Question 2: Emissions in Baltimore City by year.
+*Have total emissions from PM2.5 decreased in the Baltimore City, Maryland (fips == "24510") from 1999 to 2008? Use the base plotting system to make a plot answering this question.*
+
+This question requires to filter *NEI* by zip code (column *fips*) and collapse the resulting data frame by year, taking sum:
+```{r}
+NEI1 <- NEI %>% filter(fips == "24510") %>% 
+        aggregate(Emissions ~ year, data = ., sum)
+```
+
+I learned how to use the magritte "%>%" operator with this question. Now, I can't stop using it :)
+
+```{r plot2, fig.height=5, fig.width=5}
+with(NEI1, plot(year, Emissions, xlab = "year", 
+                      ylab = "Emissions (tons)",
+                      pch = 19,
+                      col = "red",
+                      xaxt = "n"))
+
+# assigning ticks to x axis with the years of
+# interest
+axis(side = 1, at = c(1999,2002,2005,2008))
+
+# plotting linear model to show decreasing tendency
+model <- lm(NEI1$Emissions ~ NEI1$year)
+abline(model, lwd = 2)
+
+title("Emissions in Baltimore City (all sources)")
+```
